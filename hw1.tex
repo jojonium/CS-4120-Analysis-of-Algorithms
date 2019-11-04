@@ -1,0 +1,54 @@
+\documentclass[a4paper, 10pt, american]{article}
+
+\usepackage[utf8]{inputenc} % UTF-8 support
+\usepackage[margin=1in]{geometry} % set 1in margins
+
+\title{Analysis of Algorithms Homework 1}
+\author{Joseph~Petitti}
+\date{November 4, 2019}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+	\item Functions ordered by ascending order of growth rate:
+		\begin{itemize}
+			\item $f_2(n) = \sqrt{2n}$
+			\item
+			\item
+			\item
+			\item
+			\item
+			\item
+		\end{itemize}
+
+	\item Proof by contradiction
+		\begin{itemize}
+			\item Suppose $G$ is not a tree.
+			\item If $G$ has less than $n-1$ edges it cannot also be connected.
+			\item Because $G$ is connected but not a tree, it must contain a
+				cycle.
+			\item Remove an edge from the cycle. We are left with a connected
+				graph with $n-2$ edges, which is impossible.
+		\end{itemize}
+
+	\item \textbf{Efficient Algorithm}: Do a breadth-first search of $G$,
+		remembering each vertex you have seen. If you ever see a vertex twice,
+		$G$ contains a cycle
+
+		\textbf{Proof of Correctness}: 
+
+		\textbf{Analysis of Running Time}:
+
+	\item \begin{enumerate}
+			\item
+			\item
+		\end{enumerate}
+
+
+	\item
+\end{enumerate}
+
+\end{document}
+
