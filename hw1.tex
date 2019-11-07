@@ -1,7 +1,7 @@
-\documentclass[a4paper, 10pt, american]{article}
+\documentclass[a4paper, 10pt]{article}
 
 \usepackage[utf8]{inputenc} % UTF-8 support
-%\usepackage[margin=1in]{geometry} % set 1in margins
+\usepackage{listings} % for code listings
 
 \title{Analysis of Algorithms Homework 1}
 \author{Joseph Petitti}
@@ -35,17 +35,81 @@
 				graph with $n-2$ edges, which is impossible.
 		\end{itemize}
 
-	\item \textbf{Efficient Algorithm}: Do a breadth-first search of $G$,
-		remembering each vertex you have seen. If you ever see a vertex twice,
-		$G$ contains a cycle
+	\item \textbf{Efficient Algorithm}: Breadth-first search (assume the graph
+		is given in the adjacency list representation):
 
-		\textbf{Proof of Correctness}: 
+\begin{lstlisting}
+Choose a starting node s
+Set Discovered[s] = true
+Set Discovered[v] = false for all other v in G
+Initialize L[0] to consist of the single element s
+Set the layer counter i = 0
+While L[i] is not empty
+	Initialize an empty list L[i+1]
+	For each node u in L[i]
+		Consider each edge (u, v) incident to u
+		If Discovered[v] = false then
+			Set Discovered[v] = true
+			Add v to the list L[i + 1]
+		Else
+			Return true
+		Endif
+	EndFor
+	Increment the layer counter i by 1
+endWhile
+Return false
+\end{lstlisting}
 
-		\textbf{Analysis of Running Time}:
+		\textbf{Proof of Correctness}: This algorithm, which is essentially just
+		breadth-first search, goes through each node in $G$ by ``layer,''
+		where each layer $n$ is the set of nodes exactly $n$ distance away from
+		starting node $s$. This algorithm always moves ``down'' the graph, if
+		you encounter a node twice it means there is a loop.
+
+		\textbf{Analysis of Running Time}: This algorithm runs in $O(m + n)$
+		time, because it is really just breadth-first search.
 
 	\item \begin{enumerate}
 			\item
-			\item
+				Assuming there is a node $v \in V$ with $\textrm{degree} (v) =
+				1$ (\textit{i.e.} $v$ is a leaf node):
+
+				\begin{itemize}
+					\item Because the graph is connected, the one node that $v$
+						is connected to is also connected to the rest of the
+						graph.
+					\item Therefore if you remove $v$ the rest of the graph will
+						still be connected.
+					
+				\end{itemize}
+
+				If there is no node $v \in V$ with $\textrm{degree} (v) = 1$
+				(\textit{i.e.} no leaf nodes):
+
+				\begin{itemize}
+					\item If all nodes $v \in V$ have $\textrm{degree} (v) > 1$
+						then the graph must contain a cycle.
+					\item In a set of nodes $S$, where $S$ is a cycle, removing
+						a single node will result in a sequence of connected
+						nodes.   
+					\item Therefore, you can remove any node from the cycle and
+						the graph will still be connected.
+				\end{itemize}
+
+			\item Proof that for every strongly connected directed graph $G =
+				(V, E)$ there exists a vertex $v \in V$ such that removing $v$
+				from $G$ results with a strongly connected graph.
+
+				\begin{itemize}
+					\item In a strongly connected graph, every node is reachable
+						from every other node by definition.
+					\item Let $S$ be the set of set of all vertices in $G$
+						except for $v$.
+					\item All nodes in $S$ are reachable by all other nodes in
+						$S$, because $S$ is a subset of $G$.
+					\item If $v$ is removed from the $G$, you are left with $S$,
+						which is still strongly connected.
+				\end{itemize}
 		\end{enumerate}
 
 
