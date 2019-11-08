@@ -24,15 +24,31 @@
 			\item $f_5(n) = 10^{2n}$
 		\end{itemize}
 
-	\item Trees are connected and acyclic by definition. If $G$ has fewer than
-		$n - 1$ edges then it cannot be connected. If $G$ has more than $n - 1$
-		edges:
+	\item Proof that $G$ being a tree implies that it has exactly $n - 1$ edges:
+
+		If $G$ has fewer than $n - 1$ edges then it cannot be connected by the
+		handshake lemma. If $G$ has more than $n - 1$ edges:
 		\begin{itemize}
 			\item Suppose $G$ has more then $n - 1$ edges but  is not a tree.
 			\item Because $G$ is connected but not a tree, it must contain a
 				cycle.
 			\item Remove an edge from the cycle. We are left with a connected
-				graph with $n-2$ edges, which is impossible.
+				graph with $n - 2$ edges, which is impossible by the handshake
+				lemma.
+		\end{itemize}
+
+		Proof that $G$ being connected and having exactly $n - 1$ edges implies
+		it is a tree:
+		\begin{itemize}
+			\item Suppose $G$ is connected and has exactly $n - 1$ edges but is
+				not a tree.
+			\item We know $G$ is connected, so to not be a tree it must contain
+				a cycle.
+			\item In any connected graph with a cycle, you can remove one edge
+				from the cycle and the graph will still be connected.
+			\item Remove one edge from the cycle in $G$. We are left with a
+				connected graph with $n - 2$ edges, which is impossible by the
+				handshake lemma.
 		\end{itemize}
 
 	\item \textbf{Efficient Algorithm}: Breadth-first search (assume the graph
@@ -67,7 +83,9 @@ Return false
 		you encounter a node twice it means there is a loop.
 
 		\textbf{Analysis of Running Time}: This algorithm runs in $O(m + n)$
-		time, because it is really just breadth-first search.
+		time, because it is really just breadth-first search. There are $m$
+		edges and $n$ nodes, and in the worst case you iterate over each of them
+		once.
 
 	\item \begin{enumerate}
 			\item
@@ -80,7 +98,7 @@ Return false
 						graph.
 					\item Therefore if you remove $v$ the rest of the graph will
 						still be connected.
-					
+
 				\end{itemize}
 
 				If there is no node $v \in V$ with $\textrm{degree} (v) = 1$
@@ -91,7 +109,7 @@ Return false
 						then the graph must contain a cycle.
 					\item In a set of nodes $S$, where $S$ is a cycle, removing
 						a single node will result in a sequence of connected
-						nodes.   
+						nodes.
 					\item Therefore, you can remove any node from the cycle and
 						the graph will still be connected.
 				\end{itemize}
@@ -113,15 +131,28 @@ Return false
 		\end{enumerate}
 
 
-	\item Proof by contradiction:
+	\item Proof that the existence of an edge that crosses every cut $(S, T)$
+		implies that $G$ is connected:
+
 		\begin{itemize}
-			\item Suppose there exists a cut $(S, T)$ with no edge $e \in E$
-				that crosses it.
+			\item Suppose $G$ is connected, and there exists a cut $(S, T)$ with
+				no edge $e \in E$ that crosses it.
 			\item Therefore no edge connects a node in $S$ with a node in $T$.
 			\item If none of the nodes in $S$ are connected to any node in $T$
 				then there must exist some node $s \in S$ that is not connected
 				to some node $t \in T$.
-			\item Therefore $G$ is not connected.
+			\item Therefore $G$ is not connected, contradicting our assumption.
+		\end{itemize}
+
+		Proof that $G$ being connected implies an edge crosses $(S, T)$:
+
+		\begin{itemize}
+			\item If $G$ is connected, then there are no two disjoint subsets of
+				nodes in $G$ that are not reachable from each other.
+			\item Therefore, for any cut $(S, T)$ that separates $G$ into two
+				disjoint subsets, some node $s \in S$ must be able to reach some
+				node $t \in T$.
+			\item Therefore the cut must cross the edge between $s$ and $t$.
 		\end{itemize}
 \end{enumerate}
 
