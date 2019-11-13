@@ -1,7 +1,8 @@
 \documentclass[a4paper, 10pt]{article}
 
 \usepackage[utf8]{inputenc} % UTF-8 support
-\usepackage{tikz}
+\usepackage{tikz} % for graph drawings
+\usepackage{enumitem} % set enumerated item styles
 %\usepackage{listings} % for code listings
 
 \title{Analysis of Algorithms Homework 2}
@@ -17,7 +18,7 @@
 			\item Proof by induction:
 				\begin{itemize}
 					\item Base case: $n = 1$. In this case, you start with
-						$v_1$ and give it color 1. $v_1$ has no adjacent
+						$v_1$ and give it color~1. $v_1$ has no adjacent
 						vertices, so $G$ is legally colored.
 					\item Inductive hypothesis: for all values of $n$ such that
 						$n > 0$, the given algorithm legally colors $G$.
@@ -27,7 +28,7 @@
 							\item If $v_n$ can be legally colored by a
 								previously used color, in which case assigning
 								it a color is trivial.
-							\item Otherwise, it can be assigned color $i + 1$,
+							\item Otherwise, it can be assigned color~$i + 1$,
 								which was not used in the previous graph with $n
 								= i$ vertices.
 						\end{itemize}
@@ -70,7 +71,7 @@
 				the order $A$, then $C$, then $B$. At node $A$, it sees that
 				none of $A$'s neighbors are already colored, so assigns it color
 				1. At $C$, it sees that the neighbor $A$ is already assigned
-				color 1, so it assigns $C$ the next lowest color, 2. At node
+				color~1, so it assigns $C$ the next lowest color, 2. At node
 				$B$, it sees that neighbors $A$ and $B$ already have the colors
 				1 and 2, respectively, so assigns it the next lowest color
 				color, 3. In this graph, 3 colors are used, which is equal to
@@ -84,9 +85,9 @@
 		weight. Then, go through the edges in order from smallest weight to
 		largest, and add each to the minimum spanning tree if it it attached to
 		a vertex that is not already in the minimum spanning tree. The time
-		complexity is $O(E \log V)$. Sorting the edges with comparison sort
-		takes $O(E \log E)$ time, and allows you to remove the minimum element
-		in constant time.
+		complexity is $O(|E| \log |V|)$. Sorting the edges with comparison sort
+		takes $O(|E| \log |E|)$ time, and allows you to remove the minimum
+		element in constant time.
 	   
 		Proof of correctness:
 
@@ -131,6 +132,56 @@
 			\end{tikzpicture}
 		\end{figure}
 
+	\item \textbf{Algorithm}:
+		\begin{itemize}
+			\item Add a vertex $s$ to $G$ such that $s$ is connected to every
+				vertex in $S$ by an edge with weight 0. Similarly, add a vertex
+				$t$ to $G$ such that $t$ is connected to every vertex in $T$ by
+				an edge with weight 0.
+			\item Now we only need to find the shortest path between $s$ and
+				$t$. Dijkstra's algorithm  can do this.
+				\begin{enumerate}[label=\arabic*.]
+					\item Mark all nodes unvisited. Create a set $U$ of all
+						unvisited nodes.
+					\item Assign each node a tentative distance value: 0 for $s$
+						and infinity for all unvisited nodes. Set $s$ as the
+						current node.
+					\item At the current node, consider all of its unvisited
+						neighbors and calculate their tentative distances
+						through the current node. Compare the newly calculated
+						tentative distance to the current assigned value and
+						assign the smaller one.
+					\item When we are done considering all of the unvisited
+						neighbors of the current node, mark the current node as
+						visited and remove it from $U$.
+					\item If $t$ has been marked visited then stop. Starting
+						from $s$, build a path of nodes to $t$ by following the
+						nodes marked with the smallest tentative distance.
+						Return this path.
+					\item Otherwise, select the unvisited node that is marked
+						with the smallest tentative distance, set it as the new
+						current node, and go back to step 3.
+				\end{enumerate}
+			\item Now that we have the shortest path between $s$ and $t$, call
+				that set of nodes $V$.
+			\item The path between the last node in $V$ that is also in $S$ and
+				the first node in $V$ that is also in $T$ is the shortest path
+				connecting a vertex in $S$ to a vertex in $T$.
+		\end{itemize}
+		
+		\textbf{Time complexity}: Adding $s$ and $t$ takes $O(\max (|S|, |T|))$
+		time. Dijkstra's algorithm takes $O(|E| + |V| \log |V|)$ when using a
+		Fibonacci Heap and adjacency list. The final step takes $O(|V|)$ time.
+		This simplifies to $O(|E| + |V| \log |V|)$, which is the same as
+		Dijkstra's algorithm.
+
+		\textbf{Proof of correctness}:
+
+		\begin{itemize}
+			\item Suppose towards contradiction that the length of the path
+				given by the above algorithm, $D$, is greater than the actual
+				shortest distance, $d$.
+		\end{itemize}
 \end{enumerate}
 
 \end{document}
