@@ -18,26 +18,46 @@
 
 		Base case:
 
-		\[ \textrm{Maximum weight } =
+		$$ \textrm{Maximum weight } =
 		\begin{cases}
 			0 & \textrm{if } n = 0 \\
 			w(v_1) & \textrm{if } n = 1
-		\end{cases} \]
+		\end{cases} $$
 
-		Store this result in $A[0]$. When looking at vertex $v_i$, the memoized
-		maximum weight is:
-
-		\begin{itemize}
-			\item $A[i - 1]$ if $v_i$ is not in the optimal solution
-			\item $A[i -2] + w(v_i)$ if $v_i$ is in the optimal solution
-		\end{itemize}
-
-		Choose whichever is bigger and store the result in $A[i]$. If we chose
-		the second case then $v_i$ is in $P$.
+		Store this value in $A[0]$. When looking at vertex $v_i$, the memoized
+		value, $A[i] = \max ( A[i - 1], A[i - 2] + w(v_i))$. Then, if $A[i] \ne
+		A[i - 1]$ (\textit{i.e.} we chose the first option), $v_i$ is in the
+		optimal solution. After looking at every vertex, $A[n]$ is the maximal
+		weight.
 
 		\textbf{Proof of correctness by induction}:
 
+		Base case: when $n = 0$ $A[0] = 0$, which is the optimal solution (the
+		maximal weight of a set of 0 vertices is 0).
+
+		Inductive hypothesis: for all values of $n$ such that $n > 0$, $A[n]$
+		computed by the above algorithm is the maximal weight of an independent
+		set of $P$.
+
+		Inductive step: $n = i + 1$. When the algorithm reaches a vertex $v_i$,
+		either $v_i$ belongs to the optimal solution or it does not. At vertex
+		$i$, 
+		
+		\[ A[i] =
+		\begin{cases}
+			A[i - 1] & \textrm{if } v_i \textrm{ is not in the optimal
+				solution} \\
+			A[i -2] + w(v_i) & \textrm{if } v_i \textrm{ is in the optimal
+				solution}
+		\end{cases} \]
+
 		\textbf{Analysis of running time}:
+		
+		This algorithm runs is $O(n)$, because it needs to only examine each
+		vertex in $P$ once, performing constant time operations on each one.
+		Memoization of values that would need to be calculated multiple times in
+		the brute force approach allow us to only calculate each value only
+		once.
 
 	\item
 
