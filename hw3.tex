@@ -49,6 +49,9 @@
 				solution}
 		\end{cases} \]
 
+		The algorithm chooses the maximum of the two cases, so it always chooses
+		the maximum possible value.
+
 		\textbf{Analysis of running time}: This algorithm runs is $O(n)$,
 		because it needs to only examine each vertex in $P$ once, performing
 		constant time operations on each one. Memoization of values that would
@@ -95,12 +98,12 @@
 						\If(\tcp*[f]{put $i$ in knapsack 1}){$j > w(i)$}{
 							$A[j][k] \gets \max(A[j][k], v(i) + A[j - w(i)][k]$
 							\;
-							\maxValue $\gets \max(\maxValue, A[i][j][k])$\;
+							\maxValue $\gets \max(\maxValue, A[j][k])$\;
 						}
 						\If(\tcp*[f]{put $i$ in knapsack 2}){$k > w(i)$}{
 							$A[j][k] \gets \max(A[j][k], v(i) + A[j][k - w(i)]$
 							\;
-							\maxValue $\gets \max(\maxValue, A[i][j][k])$\;
+							\maxValue $\gets \max(\maxValue, A[j][k])$\;
 						}
 					}
 				}
@@ -109,7 +112,14 @@
 			\label{alg:prob3}
 		\end{algorithm}
 
-		\textbf{Proof of correctness}: 
+		To get the actual selected items can be calculated by tracing back
+		through the array using the algorithm described on page 271 of
+		``Algorithm Design'' by Jon Kleinberg and Éva Tardos.
+
+		\textbf{Proof of correctness}: This algorithm calculates all possible
+		combinations of items in knapsacks (it merely avoids the cost associated
+		with brute-force search by avoiding recalculating values). It chooses
+		the maximum among all possible combinations, so it must be correct.
 
 		\textbf{Analysis of running time}: This algorithm is $O(n W_1 W_2)$
 		because it contains three nested loops, the first running $n$ times, the
@@ -149,9 +159,16 @@
 		optimal solution. The maximum subset of a set with one element is just
 		the one element.
 
-		Inductive hypothesis: for all values of $n$ such that $n > 0$, $A[n]$
-		computed by the above algorithm is the maximal weight of an independent
-		set of $P$.
+		Inductive hypothesis: For all values of $n > 1$, the values $i, j$
+		returned by the above algorithm will represent the maximum sequential
+		subset of $S$.
+
+		Inductive step: $n = i + 1$. The algorithm simply considers adding $a_i$
+		to the correctly computed maximal sequential subset for $n = i$, and
+		takes this as the new optimal solution if it is better.
+
+		\textbf{Analysis of running time}: This algorithm is $O(n^2)$, because
+		it contains two nested loops that each run $n$ or fewer times.
 
 \end{enumerate}
 
