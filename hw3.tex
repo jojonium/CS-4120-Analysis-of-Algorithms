@@ -1,0 +1,47 @@
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage[utf8]{inputenc} % UTF-8 support
+\usepackage{amsmath}
+
+\title{Analysis of Algorithms Homework 3}
+\author{Joseph Petitti}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+	\item \textbf{Algorithm}:
+
+		Let $w(v_i)$ be the weight of vertex $i$.
+
+		Base case:
+
+		\[ \textrm{Maximum weight } =
+		\begin{cases}
+			0 & \textrm{if } n = 0 \\
+			w(v_1) & \textrm{if } n = 1
+		\end{cases} \]
+
+		Store this result in $A[0]$. When looking at vertex $v_i$, the memoized
+		maximum weight is:
+
+		\begin{itemize}
+			\item $A[i - 1]$ if $v_i$ is not in the optimal solution
+			\item $A[i -2] + w(v_i)$ if $v_i$ is in the optimal solution
+		\end{itemize}
+
+		Choose whichever is bigger and store the result in $A[i]$. If we chose
+		the second case then $v_i$ is in $P$.
+
+		\textbf{Proof of correctness by induction}:
+
+		\textbf{Analysis of running time}:
+
+	\item
+
+\end{enumerate}
+
+\end{document}
+
