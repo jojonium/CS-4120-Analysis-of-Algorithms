@@ -2,6 +2,7 @@
 
 \usepackage[utf8]{inputenc} % UTF-8 support
 \usepackage{amsmath}
+\usepackage[]{algorithm2e}
 
 \title{Analysis of Algorithms Homework 3}
 \author{Joseph Petitti}
@@ -12,9 +13,7 @@
 \maketitle
 
 \begin{enumerate}
-	\item \textbf{Algorithm}:
-
-		Let $w(v_i)$ be the weight of vertex $i$.
+	\item \textbf{Algorithm}: Let $w(v_i)$ be the weight of vertex $i$.
 
 		Base case:
 
@@ -26,14 +25,13 @@
 
 		Store this value in $A[0]$. When looking at vertex $v_i$, the memoized
 		value, $A[i] = \max ( A[i - 1], A[i - 2] + w(v_i))$. Then, if $A[i] \ne
-		A[i - 1]$ (\textit{i.e.} we chose the first option), $v_i$ is in the
+		A[i - 1]$ (\textit{i.e.} we chose the second option), $v_i$ is in the
 		optimal solution. After looking at every vertex, $A[n]$ is the maximal
 		weight.
 
-		\textbf{Proof of correctness by induction}:
-
-		Base case: when $n = 0$ $A[0] = 0$, which is the optimal solution (the
-		maximal weight of a set of 0 vertices is 0).
+		\textbf{Proof of correctness by induction}: Base case: when $n = 0$
+		$A[0] = 0$, which is the optimal solution (the maximal weight of a set
+		of 0 vertices is~0).
 
 		Inductive hypothesis: for all values of $n$ such that $n > 0$, $A[n]$
 		computed by the above algorithm is the maximal weight of an independent
@@ -51,15 +49,109 @@
 				solution}
 		\end{cases} \]
 
-		\textbf{Analysis of running time}:
-		
-		This algorithm runs is $O(n)$, because it needs to only examine each
-		vertex in $P$ once, performing constant time operations on each one.
-		Memoization of values that would need to be calculated multiple times in
-		the brute force approach allow us to only calculate each value only
-		once.
+		\textbf{Analysis of running time}: This algorithm runs is $O(n)$,
+		because it needs to only examine each vertex in $P$ once, performing
+		constant time operations on each one. Memoization of values that would
+		need to be calculated multiple times in the brute force approach allow
+		us to only calculate each value only once.
 
-	\item
+		\newpage
+
+	\item Let $\texttt{substr}(i, j)$ be the substring of $r$ from character $i$
+		to character $j$. Initialize an array $A$ of length $n$. Each value
+		$A[i]$ will indicate whether $\texttt{substr}(1, i)$ is a concatenation
+		of strings from $D$.
+
+		\IncMargin{1em}
+		\begin{algorithm}[h]
+			\SetKwFunction{substr}{substr}
+			\For{$j \gets 1$ \KwTo $n$}{
+				\eIf{$\substr(1, j)$ belongs to $D$}{
+					$A[j] \gets$ true \;
+				}{
+					\For{$k \gets 1$ \KwTo $j - 1$}{
+						$A[j] \gets (A[k] \land (\substr(k + 1, j)
+						\textrm{ belongs to } D))$ \;
+					}
+				}
+			}
+			\Return{A[n]}
+			\label{alg:prob2}
+		\end{algorithm}
+
+		This algorithm is $O(n^2)$ because in the worst case the inner loop runs
+		$n$ times, and the outer loop runs $n$ times.
+
+	\item \textbf{Algorithm}: Let $n$ be the number of items, $w(i)$ be the
+		weight of item $i$, and $v(i)$ be the value of item $i$. Initialize a
+		two-dimensional array $A[W_1][W_2]$, with all values initialized to 0.
+
+		\begin{algorithm}[h]
+			\SetKwData{maxValue}{maxValue}
+			\maxValue $\gets 0$\;
+			\For{$i \gets n - 1$ \KwTo $1$}{
+				\For{$j \gets 1$ \KwTo $W_1$}{
+					\For{$k \gets 1$ \KwTo $W_2$}{
+						\If(\tcp*[f]{put $i$ in knapsack 1}){$j > w(i)$}{
+							$A[j][k] \gets \max(A[j][k], v(i) + A[j - w(i)][k]$
+							\;
+							\maxValue $\gets \max(\maxValue, A[i][j][k])$\;
+						}
+						\If(\tcp*[f]{put $i$ in knapsack 2}){$k > w(i)$}{
+							$A[j][k] \gets \max(A[j][k], v(i) + A[j][k - w(i)]$
+							\;
+							\maxValue $\gets \max(\maxValue, A[i][j][k])$\;
+						}
+					}
+				}
+			}
+			\Return{\maxValue}
+			\label{alg:prob3}
+		\end{algorithm}
+
+		\textbf{Proof of correctness}: 
+
+		\textbf{Analysis of running time}: This algorithm is $O(n W_1 W_2)$
+		because it contains three nested loops, the first running $n$ times, the
+		second running $W_1$ times, and the third running $W_2$ times.
+
+		\newpage
+
+	\item \textbf{Algorithm}: Initialize a two-dimensional array $A[n][n]$.
+
+		\begin{algorithm}[h]
+			\SetKwData{maxValue}{maxValue}
+			\SetKwData{maxI}{optI}
+			\SetKwData{maxJ}{optJ}
+			\maxValue $\gets -\infty$ \;
+			\For{$i \gets 1$ \KwTo $n$}{
+				$A[i][i] \gets a_i$ \;
+				\If{$A[i][i] > \maxValue$}{
+					$\maxValue \gets A[i][i]$ \;
+					$\maxI \gets i$ \;
+					$\maxJ \gets i$ \;
+				}
+				\For{$j \gets i + 1$ \KwTo $n$}{
+					$A[i][j] = A[i][j - 1] + a_i$ \;
+					\If{$A[i][j] > \maxValue$}{
+						$\maxValue \gets A[i][j]$ \;
+						$\maxI \gets i$ \;
+						$\maxJ \gets j$ \;
+					}
+				}
+			}
+			\Return{\maxI, \maxJ}
+			\label{alg:prob4}
+		\end{algorithm}
+
+		\textbf{Proof of correctness by induction}: Base case: when $n$ is 1,
+		the above algorithm will return $i = 1, j = 1$, which is obviously the
+		optimal solution. The maximum subset of a set with one element is just
+		the one element.
+
+		Inductive hypothesis: for all values of $n$ such that $n > 0$, $A[n]$
+		computed by the above algorithm is the maximal weight of an independent
+		set of $P$.
 
 \end{enumerate}
 
