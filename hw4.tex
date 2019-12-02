@@ -1,14 +1,17 @@
 \documentclass[a4paper, 10pt]{article}
 
 \usepackage[utf8]{inputenc} % UTF-8 support
-%\usepackage{amsmath}
-%\usepackage[]{algorithm2e}
+\usepackage{amsmath}
+\usepackage[]{algorithm2e}
+\usepackage{biblatex}
 
 \title{Analysis of Algorithms Homework 4}
 \author{Joseph Petitti}
 \date{\today}
+\bibliography{hw4}
 
 \begin{document}
+\IncMargin{1em}
 
 \maketitle
 
@@ -58,7 +61,157 @@
 				sub-problems will give us the correct optimal solution.
 		\end{itemize}
 
-	\item
+	\item \textbf{Algorithm}:
+
+		The Wagner--Fischer Algorithm is a dynamic programming algorithm that
+		computes the edit distance between two strings, and has a running time
+		of $O(m \times n)$.
+
+		Let Array be a two-dimensional $(m+1)$-by-$(n+1)$ array filled with
+		zeroes. For each $i, j$, $\textrm{Array}[i][j]$ will hold the edit
+		distance between the first $i$ characters of $X$ and the first $j$
+		characters of $Y$.
+
+		\begin{algorithm}[h]
+			\SetKwData{Array}{Array}
+			\SetKwData{SubstitutionCost}{SubstitutionCost}
+			\tcp{i deletions turns string of length i into empty string}
+			\For{$i \gets 1$ \KwTo $m$}{
+				$\Array[i][0] \gets i$ \;
+			}
+			\BlankLine
+			\tcp{i insertions from empty string is string of length i}
+			\For{$j \gets 1$ \KwTo $n$}{
+				$\Array[0][j] \gets j$ \;
+			}
+			\BlankLine
+
+			\For{$j \gets 1$ \KwTo $n$}{
+				\For{$i \gets 1$ \KwTo $m$}{
+					\eIf{$x_i = y_j$}{
+						$\SubstitutionCost \gets 0$ \;
+					}{
+						$\SubstitutionCost \gets 1$ \;
+					}
+					$\Array[i][j] \gets \min($ \\
+					\quad $\Array[i - 1][j] + 1, $ \tcp*[f]{deletion} \\
+					\quad $\Array[i][j - 1] + 1, $ \tcp*[f]{insertion} \\
+					\quad $\Array[i - 1][j - 1] + \SubstitutionCost$
+					\tcp*[f]{substitution} \\
+					$)$ \;
+				}
+			}
+
+			\Return $\Array[m][n]$
+			\label{alg:prob2}
+		\end{algorithm}
+
+		The edit distance problem is a special case of the sequence alignment
+		problem because we are also allowed to make substitutions. In the
+		algorithm above, the gap penalty $\delta$ is 1 and the mismatch penalty
+		$\alpha$ is 1.
+
+		\textbf{Analysis of Running Time}:
+
+		The algorithm above contains two nested loops. The outer loop runs $n$
+		times, and the inner loop runs $m$ times, giving us a running time of
+		$O(n \times m)$.
+
+		\textbf{Proof of Correctness by Induction}:
+
+		\textbf{Base cases}: The algorithm above correctly returns the minimum
+		edit distance for the following base cases:
+
+		\begin{itemize}
+			\item When $n = 0$, you can get from $X$ to $Y$ in $m$ steps simply
+				by deleting all $m$ characters in $X$.
+			\item When $m = 0$, you can get from $X$ to $Y$ in $n$ steps simply
+				by inserting all $n$ characters from $Y$ into $X$.
+		\end{itemize}
+
+		\textbf{Inductive step}: At any $i, j$, there are only three possible
+		operations you can perform:
+
+		\begin{enumerate}
+			\item Substitute $x_i$ for $y_j$. The total edit distance at this
+				point is the edit distance between $x_1 x_2 \dots x_{i - 1}$ and
+				$y_1 y_2 \dots y_{j-1}$ plus the cost of the substitution (if
+				$x_i \ne y_j$). By the inductive assumption we have already
+				calculated this previous value correctly.
+			\item Delete $x_i$. This costs 1, so the total edit distance at this
+				point is 1 plus the edit distance between $x_1 x_2 \dots
+				x_{i-1}$ and $y_1 y_2 \dots y_{j}$, which we have already
+				calculated by the inductive assumption.
+			\item Insert $y_j$. This costs 1, so the total edit distance at this
+				point is 1 plus the edit distance between $x_1 x_2 \dots
+				x_{i}$ and $y_1 y_2 \dots y_{j - 1}$, which we have already
+				calculated by the inductive assumption.
+		\end{enumerate}
+
+		Each of these three possible actions leads back to one of the base cases
+		above, so the algorithm is correct by induction for any $i, j$.
+
+	\item 
+		\begin{enumerate}
+			\item We need to check each edge in $C(S \; \backslash \; j, n)$ to
+				see where we can insert a visit to $j$ for the minimum cost. Let
+				V be the cities in $C(S \; \backslash \; j, n)$ in the
+				order that they are visited, indexed starting at 1. Let Array be
+				an empty array of length $n - 1$, indexed starting at 1. The
+				cost change of inserting the visit to $j$ after the visit to
+				city $i$ will be store in $\textrm{Array}[i]$.
+
+				\IncMargin{2em}
+				\begin{algorithm}[h]
+					\SetKwData{Array}{Array}
+					\SetKwData{EdgeBeforeJ}{EdgeBeforeJ}
+					\SetKwData{Minimum}{Minimum}
+					$\Minimum \gets \infty$ \;
+					\For{$i \gets 1$ \KwTo $n - 1$}{
+						$\Array[i] \gets (d_{V_i j} + d_{j V_{i + 1}}) - d_{V_i
+							V_{i + 1}} $ \;
+						\If{$\Array[i] < \Minimum$}{
+							$\Minimum \gets \Array[i]$ \;
+							$\EdgeBeforeJ \gets i$ \;
+						}
+					}
+					Insert $j$ after \EdgeBeforeJ in $V$ \;
+					\Return $V$ \;
+				\end{algorithm}
+
+				%TODO ask Kent about recurrence relation
+
+			\item $C(S, 1)$ should be $\infty$ for all subsets $S$ with $1 \in
+				S$ and $|S| > 1$ because this would be the minimal length path
+				starting at 1, ending at 1, and traversing all cities in $S$
+				\textit{exactly once}. To both start and end at 1 is to traverse
+				1 twice, making this input invalid. An invalid minimum path must
+				be longer than any valid minimum path, so it should be $\infty$.
+				$C(\{ 1 \}, 1)$ is the minimum path from 1 to 1, visiting 1
+				exactly once. The shortest path from any node to itself is zero,
+				so $C(\{ 1 \}, 1) = 0$.
+
+			\item The Held--Karp Algorithm solves the Traveling Salesman Problem
+				in $O(n^2 2^n)$ time. This algorithm contains three nested
+				\texttt{for} loops. The first runs $n$ times, the second runs
+				for each subset of $S$, and the third runs for each vertex in
+				that subset. There are $2^n$ subsets of $S$, so in the worst
+				case this is $O(n \times 2^n \times n)$, which is $O(n^2 2^n)$.
+				For a proof of this algorithm's correctness, see
+				\cite{held1962dynamic}.
+
+			\item $b^n = b \times b \times b \dots \times b$, whereas $n! = 1
+				\times 2 \times 3 \dots \times n$. As $n$ grows to be much
+				larger than $b$, the exponential sequence will still be
+				multiplying by $b$ while the factorial sequence will be
+				multiplying by increasingly larger and larger numbers. For
+				sufficiently large $n$, $n!$ will outpace $b^n$ because $n$ can
+				grow to be a larger multiplier.
+
+			\item %TODO implement
+		\end{enumerate}
 \end{enumerate}
+
+\printbibliography
 
 \end{document}
