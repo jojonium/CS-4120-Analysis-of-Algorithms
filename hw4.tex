@@ -1,0 +1,64 @@
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage[utf8]{inputenc} % UTF-8 support
+%\usepackage{amsmath}
+%\usepackage[]{algorithm2e}
+
+\title{Analysis of Algorithms Homework 4}
+\author{Joseph Petitti}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+	\item 
+		We assume $G$ does not contain a cycle where the total cost of all edges
+		in the cycle is negative because the concept of a shortest path is
+		meaningless in a graph with negative-weight cycles.
+
+		\textbf{Algorithm}:
+
+		\begin{enumerate}
+			\item Remove $e$ from the graph, such that $G' = (V, E \; \backslash
+				\; e)$. Use Dijkstra's algorithm to find the shortest path
+				between $s$ and $t$ on $G'$ and store it as $S_1$.
+			\item Let $u$ be the starting node of $e$. Use Dijkstra's algorithm
+				to find the shortest path between $s$ and $u$ and store it as
+				$S_2$.
+			\item Let $v$ be the ending node of $e$. Use Dijkstra's algorithm to
+				find the shortest path between $v$ and $t$ on $G$ and store it
+				as $S_3$.
+			\item Return $\min ( S_1, S_2 + \textrm{value}(e) + S_3 )$.
+		\end{enumerate}
+
+		\textbf{Analysis of Running Time}:
+
+		The running time of Dijkstra's Algorithm is analyzed in ``Algorithm
+		Design'' by Jon Kleinberg and Éva Tardos as $O(m \log n)$. The algorithm
+		above merely uses Dijkstra's algorithm three times, giving it a time
+		complexity of $O(3m \log n)$, which simplifies to $O(m \log n)$.
+
+		\textbf{Proof of Correctness}:
+
+		There are two possible scenarios: either $e$ is in the shortest path
+		between $s$ and $t$, or it is not.
+
+		\begin{itemize}
+			\item If $e$ is not in the shortest path, step (a) above will
+				correctly find the shortest by using Dijkstra's Algorithm on a
+				graph without $e$. The correctness of Dijkstra's Algorithm is
+				proven in ``Algorithm Design'' by Jon Kleinberg and Éva Tardos.
+			\item If $e$ is in the shortest path, then we can split the shortest
+				path into three segments: the path from $s$ to $u$, $e$, and the
+				path from $v$ to $t$. Dijkstra's Algorithm correctly finds the
+				solution to the first and third segments, and the second segment
+				is simply the weight of $e$. Summing these correctly computed
+				sub-problems will give us the correct optimal solution.
+		\end{itemize}
+
+	\item
+\end{enumerate}
+
+\end{document}
