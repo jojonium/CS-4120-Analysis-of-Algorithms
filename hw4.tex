@@ -153,33 +153,30 @@
 
 	\item 
 		\begin{enumerate}
-			\item We need to check each edge in $C(S \; \backslash \; j, n)$ to
-				see where we can insert a visit to $j$ for the minimum cost. Let
-				V be the cities in $C(S \; \backslash \; j, n)$ in the
-				order that they are visited, indexed starting at 1. Let Array be
-				an empty array of length $n - 1$, indexed starting at 1. The
-				cost change of inserting the visit to $j$ after the visit to
-				city $i$ will be store in $\textrm{Array}[i]$.
+			\item We need to add $j$ to an already calculated path such that the
+				total length of the new path is minimized. Let \texttt{val} be a
+				function that takes a path and returns the total length of that
+				path, and \texttt{dist} be a function that returns the distance
+				between two nodes.
 
 				\IncMargin{2em}
 				\begin{algorithm}[h]
-					\SetKwData{Array}{Array}
-					\SetKwData{EdgeBeforeJ}{EdgeBeforeJ}
 					\SetKwData{Minimum}{Minimum}
+					\SetKwFunction{val}{val}
+					\SetKwFunction{dist}{dist}
 					$\Minimum \gets \infty$ \;
-					\For{$i \gets 1$ \KwTo $n - 1$}{
-						$\Array[i] \gets (d_{V_i j} + d_{j V_{i + 1}}) - d_{V_i
-							V_{i + 1}} $ \;
-						\If{$\Array[i] < \Minimum$}{
-							$\Minimum \gets \Array[i]$ \;
-							$\EdgeBeforeJ \gets i$ \;
+					\For{$i \gets 1$ \KwTo $n$}{
+						\If{ \val{$C(S \; \backslash \; j, i)$} $+$ \dist{$i,
+								j$} $< \Minimum$}{
+							$\Minimum \gets$ \val{$C(S \; \backslash \; j, i)$} 
+							$+$ \dist{$i, j$} \;
 						}
 					}
-					Insert $j$ after \EdgeBeforeJ in $V$ \;
-					\Return $V$ \;
+					\Return \Minimum \;
 				\end{algorithm}
 
-				%TODO ask Kent about recurrence relation
+				This takes only $O(n)$ time because it needs only to iterate
+				over each of the $n$ already calculated paths.
 
 			\item $C(S, 1)$ should be $\infty$ for all subsets $S$ with $1 \in
 				S$ and $|S| > 1$ because this would be the minimal length path
