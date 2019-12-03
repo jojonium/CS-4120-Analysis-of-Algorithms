@@ -3,7 +3,7 @@
 \usepackage[utf8]{inputenc} % UTF-8 support
 \usepackage{amsmath}
 \usepackage[]{algorithm2e}
-\usepackage{biblatex}
+\usepackage[citestyle=authoryear]{biblatex}
 
 \title{Analysis of Algorithms Homework 4}
 \author{Joseph Petitti}
@@ -38,9 +38,9 @@
 
 		\textbf{Analysis of Running Time}:
 
-		The running time of Dijkstra's Algorithm is analyzed in ``Algorithm
-		Design'' by Jon Kleinberg and Éva Tardos as $O(m \log n)$. The algorithm
-		above merely uses Dijkstra's algorithm three times, giving it a time
+		The running time of Dijkstra's Algorithm is analyzed in
+		\cite[p. 141]{algorithmdesign} as $O(m \log n)$. The algorithm above
+		merely uses Dijkstra's algorithm three times, giving it a time
 		complexity of $O(3m \log n)$, which simplifies to $O(m \log n)$.
 
 		\textbf{Proof of Correctness}:
@@ -52,7 +52,7 @@
 			\item If $e$ is not in the shortest path, step (a) above will
 				correctly find the shortest by using Dijkstra's Algorithm on a
 				graph without $e$. The correctness of Dijkstra's Algorithm is
-				proven in ``Algorithm Design'' by Jon Kleinberg and Éva Tardos.
+				proven in \cite[p. 139]{algorithmdesign}.
 			\item If $e$ is in the shortest path, then we can split the shortest
 				path into three segments: the path from $s$ to $u$, $e$, and the
 				path from $v$ to $t$. Dijkstra's Algorithm correctly finds the
@@ -197,7 +197,16 @@
 				for each subset of $S$, and the third runs for each vertex in
 				that subset. There are $2^n$ subsets of $S$, so in the worst
 				case this is $O(n \times 2^n \times n)$, which is $O(n^2 2^n)$.
-				For a proof of this algorithm's correctness, see
+
+				Proof by contradiction: suppose that the path returned by the
+				Held--Karp algorithm is not minimal. For a path to be
+				non-minimal, it must contain some subpath between nodes $u$ and
+				$v$ that is non-minimal. However, the Held--Karp algorithm
+				always chooses the minimum of all correctly computed subpaths,
+				so the subpath from $u$ to $v$ would have been rejected by the
+				algorithm, a contradiction.
+
+				For a more detailed proof of this algorithm's correctness, see
 				\cite{held1962dynamic}.
 
 			\item $b^n = b \times b \times b \dots \times b$, whereas $n! = 1
@@ -207,8 +216,6 @@
 				multiplying by increasingly larger and larger numbers. For
 				sufficiently large $n$, $n!$ will outpace $b^n$ because $n$ can
 				grow to be a larger multiplier.
-
-			\item %TODO implement
 		\end{enumerate}
 \end{enumerate}
 
