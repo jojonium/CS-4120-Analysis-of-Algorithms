@@ -1,0 +1,67 @@
+\documentclass[a4paper, 10pt]{article}
+
+\usepackage[utf8]{inputenc} % UTF-8 support
+
+\title{Analysis of Algorithms Homework 5}
+\author{Joseph Petitti}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\begin{enumerate}
+	\item First we show that this problem, \texttt{DoubleSAT}, is in
+		$\mathsf{NP}$. Given $x \ge 2$ assignments $a_1, a_2, \dots , a_x$ you
+		can simply evaluate $\phi$ with $a_1$ and $a_2$ to verify whether they
+		satisfy $\phi$. Evaluating $\phi$ takes polynomial time. Therefore
+		\texttt{DoubleSAT} is in $\mathsf{NP}$.
+
+		Next, we show that SAT is reducible to \texttt{DoubleSAT}. Given an
+		input formula $\phi(x_1, \dots, x_n)$ return a formula $\phi'$ with a
+		new variable $y$ introduced:
+		
+		$$\phi'(x_1, \dots, x_n, y) = \phi(x_1, \dots, x_n) \land (y \lor \bar
+		y)$$ 
+
+		If $\phi(x_1, \dots, x_n) \in \mathrm{SAT}$, then $\phi$ has at least
+		one satisfying assignment. Therefore, $\phi'$ has at least two
+		satisfying assignments, one where $y$ is true and one where $y$ is
+		false.
+
+		If $\phi(x_1, \dots, x_n) \notin \mathrm{SAT}$, then $\phi$ has no
+		satisfying assignment. Therefore, $\phi'$ clearly also has no
+		satisfying assignments, because the first clause $\phi(x_1, \dots, x_n)$
+		is always false.
+
+		Therefore, SAT $\le_p$ \texttt{DoubleSAT}. Because it is in
+		$\mathsf{NP}$ and an NP-complete problem (SAT) reduces to it,
+		\texttt{DoubleSAT}is NP-complete.
+
+	\item First we show that this problem, \texttt{DominatingSet}, is in
+		$\mathsf{NP}$. We can easily verify that a set of vertices $S \subseteq
+		V$ we can verify whether or not it is a dominating set of $G$ with size
+		$\le D$ in polynomial time. We can simply check that the size of $S \le
+		D$ and iterate over the $v \in V$ to check whether $v$ is a member of
+		$S$ or any of its neighbors are members of $S$ in $O(n^2)$ time.
+		Therefore \texttt{DominatingSet} is in $\mathsf{NP}$.
+
+		Next, we show that vector cover is reducible to \texttt{DominatingSet}.
+		Given $G$ we need to make a graph $G'$ such that $G'$ has a dominating
+		set of size at most $D'$ if and only if $G$ has a vertex cover of size at
+		most $D$. To translate from $G$ to $G'$ in polynomial time, we insert a
+		new vertex connected to the endpoints of each edge in $G$. That is,
+		for each edge $e \in E$ where $u, v$ are the endpoints of $e$, we add a
+		vertex $w$ to $G'$, where $w$ is connected to $u$ and $v$. We keep the
+		original edge $u, v$ as well. Now every vertex in the vector cover of
+		$G$ is also in the dominating set of $G'$. The exception is nodes in $G$
+		with no edges incident to them. We will simply include these in the
+		dominating set, $D' = D + i$, where $i$ is the number of vertexes $v \in
+		V$ such that no edge $e \in E$ is incident to $v$.
+
+		Now we prove that $G'$ has a dominating set of size at most $D'$ if and
+		only if $G$ has a vector cover of size at most $D$.
+\end{enumerate}
+
+\end{document}
+
