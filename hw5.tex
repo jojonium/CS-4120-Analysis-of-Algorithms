@@ -36,7 +36,7 @@
 
 		Therefore, SAT $\le_p$ \texttt{DoubleSAT}. Because it is in
 		$\mathsf{NP}$ and an NP-complete problem (SAT) reduces to it,
-		\texttt{DoubleSAT}is NP-complete.
+		\texttt{DoubleSAT} is NP-complete.
 
 	\item First we show that this problem, \texttt{DominatingSet}, is in
 		$\mathsf{NP}$. We can easily verify that a set of vertices $S \subseteq
@@ -46,21 +46,52 @@
 		$S$ or any of its neighbors are members of $S$ in $O(n^2)$ time.
 		Therefore \texttt{DominatingSet} is in $\mathsf{NP}$.
 
-		Next, we show that vector cover is reducible to \texttt{DominatingSet}.
-		Given $G$ we need to make a graph $G'$ such that $G'$ has a dominating
-		set of size at most $D'$ if and only if $G$ has a vertex cover of size at
-		most $D$. To translate from $G$ to $G'$ in polynomial time, we insert a
-		new vertex connected to the endpoints of each edge in $G$. That is,
-		for each edge $e \in E$ where $u, v$ are the endpoints of $e$, we add a
-		vertex $w$ to $G'$, where $w$ is connected to $u$ and $v$. We keep the
-		original edge $u, v$ as well. Now every vertex in the vector cover of
-		$G$ is also in the dominating set of $G'$. The exception is nodes in $G$
-		with no edges incident to them. We will simply include these in the
-		dominating set, $D' = D + i$, where $i$ is the number of vertexes $v \in
-		V$ such that no edge $e \in E$ is incident to $v$.
+		Next, we show that the vector cover problem (\texttt{VectorCover}) is
+		reducible to \texttt{DominatingSet}.  Given $G$ we need to make a graph
+		$G'$ such that $G'$ has a dominating set of size at most $D'$ if and
+		only if $G$ has a vertex cover of size at most $D$. To translate from
+		$G$ to $G'$ in polynomial time, we insert a new vertex connected to the
+		endpoints of each edge in $G$. That is, for each edge $e \in E$ where
+		$u, v$ are the endpoints of $e$, we add a vertex $w$ to $G'$, where $w$
+		is connected to $u$ and $v$. We keep the original edge $u, v$ as well.
+		Now every vertex in the vector cover of $G$ is also in the dominating
+		set of $G'$. The exception is nodes in $G$ with no edges incident to
+		them. We will simply include these in the dominating set, $D' = D +
+		|V_I|$, where $I$ is the number of vertexes $v \in V$ such that no edge
+		$e \in E$ is incident to $v$.
 
 		Now we prove that $G'$ has a dominating set of size at most $D'$ if and
 		only if $G$ has a vector cover of size at most $D$.
+		
+		\begin{itemize}
+			\item $( \Rightarrow )$ Assume $G$ has a vertex cover $S$ of size at
+				most $D$. $S' = S \cup V_I$ is a dominating set for $G'$.
+				First, all vertices with no edges incident to them ($V_I$) are
+				already in $S'$. Second, each new vertex $w$ that was added when
+				we constructed $G'$ corresponds to an edge $(u, v)$ in $G$,
+				which means that either $u$ or $v$ is in the vertex cover $S$,
+				and $w$ is dominated by the same vertex in $S'$. All the other
+				original vertices $v \in V$ incident to at least one edge in $E$
+				are either in $S$ or adjacent to a vertex in $S$, because $v$ is
+				covered by the vertex cover on $G$. Either way, it is adjacent
+				to a vertex that is now in $S'$, and is dominated. Therefore
+				$G'$ has a dominating set $S'$ of size at most $D' = D + |V_I|$.
+
+			\item $( \Leftarrow )$ Now assume $G'$ has a dominating set $S'$ of
+				size $D' = D + |V_I|$. If any special vertex $w_{uv}$ that was
+				added when constructing $G'$ is in $S'$ (and therefore is not in
+				$G$), replace it with $u$ in $S''$. Remove any isolated vertex in
+				$V_I$ from $S''$, because it will not be in the vertex cover.
+				$S''$ is now a vertex cover in of $G$. If any edge $(u, v)$ in
+				$G$ was not covered by $S''$, the special vertex $w_{uv}$ would
+				not be adjacent to any vertex of $S'$ in $G$, contradicting the
+				claim that $S'$ is a dominating set of $G'$. Therefore $G$ has a
+				vertex cover $S''$ of size at most $D$.
+		\end{itemize}
+
+		Therefore \texttt{DominatingSet} $\ge_p$ \texttt{VectorCover}.  Because
+		it is in $\mathsf{NP}$ and is reducible to a NP-complete problem
+		(\texttt{VectorCover}), \texttt{DominatingSet} is NP-complete.
 \end{enumerate}
 
 \end{document}
