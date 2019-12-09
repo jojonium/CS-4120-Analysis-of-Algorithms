@@ -1,10 +1,13 @@
 \documentclass[a4paper, 10pt]{article}
 
 \usepackage[utf8]{inputenc} % UTF-8 support
+\usepackage[]{algorithm2e}
 
 \title{Analysis of Algorithms Homework 5}
 \author{Joseph Petitti}
 \date{\today}
+
+\SetKwProg{Fn}{Function}{}{end}
 
 \begin{document}
 
@@ -92,6 +95,51 @@
 		Therefore \texttt{DominatingSet} $\ge_p$ \texttt{VectorCover}.  Because
 		it is in $\mathsf{NP}$ and is reducible to a NP-complete problem
 		(\texttt{VectorCover}), \texttt{DominatingSet} is NP-complete.
+
+	\item \begin{enumerate}
+			\item First, we show that this problem, \texttt{FeedbackSet}, is in
+				$\mathsf{NP}$. Given a set of vertices $S$ and a graph $G$, we
+				can easily verify that $S$ is a feedback vertex set by deleting
+				each vertex in $S$ and any edges containing those vertices from
+				$G$, then running a breadth-first search on the resulting graph
+				to determine whether $G' = (V \; \backslash \; S, E')$
+				contains a cycle, where $G'$ is the where $E'$ is the set of all
+				edges in $E$ that do not have a vertex in $S$.
+
+				Next, we show that the vector cover problem
+				(\texttt{VectorCover}) is reducible to \texttt{FeedbackSet}.
+				% TODO this
+
+			\item % TODO 3B
+		\end{enumerate}
+
+	\item See the algorithm below
+
+		\begin{function}[h]
+			\SetKwFunction{FRecurs}{IndependentSet}
+			\SetKwFunction{size}{size}
+			\Fn{\FRecurs {$G, k$}}{
+				\If{$\size{G} = k$}{
+					\tcp{no more vertices can be removed}
+					\Return $G$ \;
+				}
+				\BlankLine
+				\Repeat{$\neg A(G', k)$}{
+					$v \gets $ randomly chosen vertex in $G$ \;
+					$V' \gets V \; \backslash \; v$ \;
+					$G' \gets (V', E)$ \;
+				}
+				\BlankLine
+				\Return \FRecurs {$G', k$} \;
+			}
+			\BlankLine
+			\eIf{$A(G, k)$}{
+				\Return \FRecurs {$G, k$} \;
+			}{
+				\Return ``No independent set of size at least $k$ exists'' \;
+			}
+
+		\end{function}
 \end{enumerate}
 
 \end{document}
