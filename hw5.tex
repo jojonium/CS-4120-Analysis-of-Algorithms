@@ -23,7 +23,7 @@
 		Next, we show that SAT is reducible to \texttt{DoubleSAT}. Given an
 		input formula $\phi(x_1, \dots, x_n)$ return a formula $\phi'$ with a
 		new variable $y$ introduced:
-		
+
 		$$\phi'(x_1, \dots, x_n, y) = \phi(x_1, \dots, x_n) \land (y \lor \bar
 		y)$$ 
 
@@ -49,7 +49,7 @@
 		$S$ or any of its neighbors are members of $S$ in $O(n^2)$ time.
 		Therefore \texttt{DominatingSet} is in $\mathsf{NP}$.
 
-		Next, we show that the vector cover problem (\texttt{VectorCover}) is
+		Next, we show that the vertex cover problem (\texttt{VertexCover}) is
 		reducible to \texttt{DominatingSet}.  Given $G$ we need to make a graph
 		$G'$ such that $G'$ has a dominating set of size at most $D'$ if and
 		only if $G$ has a vertex cover of size at most $D$. To translate from
@@ -57,15 +57,15 @@
 		endpoints of each edge in $G$. That is, for each edge $e \in E$ where
 		$u, v$ are the endpoints of $e$, we add a vertex $w$ to $G'$, where $w$
 		is connected to $u$ and $v$. We keep the original edge $u, v$ as well.
-		Now every vertex in the vector cover of $G$ is also in the dominating
+		Now every vertex in the vertex cover of $G$ is also in the dominating
 		set of $G'$. The exception is nodes in $G$ with no edges incident to
 		them. We will simply include these in the dominating set, $D' = D +
 		|V_I|$, where $I$ is the number of vertexes $v \in V$ such that no edge
 		$e \in E$ is incident to $v$.
 
 		Now we prove that $G'$ has a dominating set of size at most $D'$ if and
-		only if $G$ has a vector cover of size at most $D$.
-		
+		only if $G$ has a vertex cover of size at most $D$.
+
 		\begin{itemize}
 			\item $( \Rightarrow )$ Assume $G$ has a vertex cover $S$ of size at
 				most $D$. $S' = S \cup V_I$ is a dominating set for $G'$.
@@ -92,28 +92,60 @@
 				vertex cover $S''$ of size at most $D$.
 		\end{itemize}
 
-		Therefore \texttt{DominatingSet} $\ge_p$ \texttt{VectorCover}.  Because
+		Therefore \texttt{DominatingSet} $\ge_p$ \texttt{VertexCover}.  Because
 		it is in $\mathsf{NP}$ and is reducible to a NP-complete problem
-		(\texttt{VectorCover}), \texttt{DominatingSet} is NP-complete.
+		(\texttt{VertexCover}), \texttt{DominatingSet} is NP-complete.
 
 	\item \begin{enumerate}
 			\item First, we show that this problem, \texttt{FeedbackSet}, is in
 				$\mathsf{NP}$. Given a set of vertices $S$ and a graph $G$, we
 				can easily verify that $S$ is a feedback vertex set by deleting
 				each vertex in $S$ and any edges containing those vertices from
-				$G$, then running a breadth-first search on the resulting graph
-				to determine whether $G' = (V \; \backslash \; S, E')$
+				$G$, then running a depth-first search on each vertex of the
+				resulting graph to determine whether $G' = (V \setminus S, E')$
 				contains a cycle, where $G'$ is the where $E'$ is the set of all
 				edges in $E$ that do not have a vertex in $S$.
 
-				Next, we show that the vector cover problem
-				(\texttt{VectorCover}) is reducible to \texttt{FeedbackSet}.
-				% TODO this
+				Next, we show that the vertex cover problem
+				(\texttt{VertexCover}) is reducible to \texttt{FeedbackSet}.
+				Given a graph $G$ and positive integer $k$, we need to make a
+				graph $G' = (V', E')$ and positive integer $k'$ such that $G'$
+				has a feedback vertex set of size at most $k'$ if and only if
+				$G$ has a vertex cover of size at most $k$. To do this we need
+				to translate every edge in $G$ to a cycle in $G'$. For each edge
+				$(u, v) \in E$, add a vertex $w$ to $V'$. Add an edge $(u, w)$
+				and an edge $(w, v)$ to $E'$. We will take $k' = k$.
+
+				\begin{itemize}
+					\item $( \Rightarrow )$ Assume $G$ has a vertex cover $S$ of
+						size $k$. Removing every vertex in $S$ from $V'$ will
+						break all the newly added triangles in $G'$, since each
+						of those triangles contains an edge connected to a
+						vertex in $S$. Any other cycle $C$ in $G'$ must also be
+						in $G$, and an edge in $C$ must be incident to a vertex
+						in $S$. Therefore, the vertex cover $S$ in $G$ is also a
+						feedback vertex set in $G'$, so $G'$ has a feedback
+						vertex set of size at most $k$.
+					\item $( \Leftarrow )$ Assume $G'$ has a feedback vertex set
+						$S'$ of size $k$. If any special vertex $w = (u, v)$
+						that is not in $V$ is in $S'$, replace it with $u$ in
+						$S''$.  Because we constructed $G'$ by replacing every
+						edge in $G$ with a triangle, every edge $e \in E$ is
+						part of a cycle. Since we replaced the newly added nodes
+						$w_{uv}$, for every edge $e = (u, v) \in E$ at least one
+						of $u, v$ must be in $S''$ in order to break the $\{ u,
+						v, w \}$ cycle. Therefore every edge in $E$ is covered
+						by a vertex in $S''$, so $G$ has a vertex cover of size
+						at most $k$.
+				\end{itemize}
 
 			\item % TODO 3B
 		\end{enumerate}
 
-	\item See the algorithm below
+	\item If a graph $G$ has an independent set $S$ of size greater than $k$,
+		then it also has an independent set of size exactly $k$, because you can
+		simply remove vertices from $S$ until there are $k$ left and it will
+		still be an independent set. See the algorithm below.
 
 		\begin{function}[h]
 			\SetKwFunction{FRecurs}{IndependentSet}
@@ -126,7 +158,7 @@
 				\BlankLine
 				\Repeat{$\neg A(G', k)$}{
 					$v \gets $ randomly chosen vertex in $G$ \;
-					$V' \gets V \; \backslash \; v$ \;
+					$V' \gets V \setminus v$ \;
 					$G' \gets (V', E)$ \;
 				}
 				\BlankLine
